@@ -1448,6 +1448,18 @@ func (ss *ServerSession) NotifyProgress(ctx context.Context, params *ProgressNot
 	return handleNotify(ctx, notificationProgress, newServerRequest(ss, orZero[Params](params)))
 }
 
+// NotifyElicitationComplete informs the client that an out-of-band URL-mode
+// elicitation interaction has completed. The ElicitationID must match the one
+// originally sent in the elicitation/create request or the
+// URLElicitationRequiredError that started the flow.
+//
+// Per the MCP spec, this MUST only be sent to the client that initiated the
+// corresponding elicitation — it is the caller's responsibility to ensure ss
+// is the correct session for the given ElicitationID.
+func (ss *ServerSession) NotifyElicitationComplete(ctx context.Context, params *ElicitationCompleteParams) error {
+	return handleNotify(ctx, notificationElicitationComplete, newServerRequest(ss, orZero[Params](params)))
+}
+
 // notifySubscriptionAcked sends a "notifications/subscriptions/acknowledged"
 // notification on the listen stream represented by this session, indicating
 // the subscription filter the server accepted (SEP-2575).
